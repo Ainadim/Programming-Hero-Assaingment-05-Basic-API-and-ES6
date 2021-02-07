@@ -76,13 +76,33 @@
     // }
 
     // Comment
-    function getMealByID(mealID) {
+    function getMealById(mealID) {
             fetch (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealID}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
+                const meal = data.meals[0];
+                addMealToDOM(meal);
             });
+    }
+    function addMealToDOM(meal) {
+        const ingredents = [];
+        for (let i = 1; i <= 20; i++) {
+            if(meal[`strIngredent${i}`]) {
+                ingredents.push(
+                    `${meal[`strIngredent${i}`]}`
+                );
+            }
+            else {
+                break;
+            }            
         }
+        single_mealEl.innerHTML = `
+        <div class = "single-meal">
+            <img src="${meal.strMealThumb}" alt="${meal.strMeal}"/>
+            <h1>${meal.strMeal}</h1>
+            <ul> ${ingredients.map((ing) => `<li>${ing}</li>`).join("")}</ul>
+        </div>`;
+    }
     submit.addEventListener("submit", searchMeal);
     mealsEl.addEventListener("click", (event) => {
         const mealInfo = event.path.find((item) => {
